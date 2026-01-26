@@ -31,10 +31,4 @@ public class Rating {
     private Integer orderNumber;
 
 
-    public Rating(String moodysRating, String sandpRating, String fitchRating, Integer orderNumber) {
-        this.moodysRating = moodysRating;
-        this.sandpRating = sandpRating;
-        this.fitchRating = fitchRating;
-        this.orderNumber = orderNumber;
-    }
 }

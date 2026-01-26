@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:th="http://www.thymeleaf.org">
+	  xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
 <meta charset="utf-8"/>
 <title>Home</title>
@@ -30,9 +30,9 @@
 			<thead>
 				<tr>
 					<th>Id</th>
-					<th>MoodysRating</th>
-					<th>SandPRating</th>
-					<th>FitchRating</th>
+					<th>Moody's</th>
+					<th>S&amp;P</th>
+					<th>Fitch</th>
 					<th>Order</th>
 					<th>Action</th>
 				</tr>
@@ -41,12 +41,14 @@
 				<tr th:each="rating : ${ratings}">
 					<td style="width: 10%" th:text="${rating.id}"></td>
 					<td th:text="${rating.moodysRating}"></td>
-					<td th:text="${rating.sandPRating}"></td>
+					<td th:text="${rating.sandpRating}"></td>
 					<td th:text="${rating.fitchRating}"></td>
-					<td th:text="${rating.order}"></td>
-					<td style="width: 15%" class="text-center">
+					<td th:text="${rating.orderNumber}"></td>
+					<td style="width: 20%" class="text-center">
 						<a th:href="@{/rating/update/{id}(id=${rating.id})}">Edit</a>&nbsp;|&nbsp;
-						<a th:href="@{/rating/delete/{id}(id=${rating.id})}">Delete</a>
+						<form th:action="@{/rating/delete/{id}(id=${rating.id})}" method="post" style="display:inline">
+							<button type="submit" class="btn btn-link p-0 m-0 align-baseline">Delete</button>
+						</form>
 					</td>
 				</tr>
 			</tbody>
