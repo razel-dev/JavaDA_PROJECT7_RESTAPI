@@ -20,7 +20,7 @@ public class User {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @Column(name = "username", nullable = false, length = 125)
+    @Column(name = "username", nullable = false, length = 125, unique = true)
     private String username;
 
     @Column(name = "password", nullable = false, length = 125)
