@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 @Controller
 @RequestMapping("/user")
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/validate")
-    public String validate(@Valid @ModelAttribute("user") UserDto userDto,
+    public String validate(@Validated(UserDto.Create.class) @ModelAttribute("user") UserDto userDto,
                            BindingResult result) {
 
         if (result.hasErrors()) {
@@ -54,7 +55,7 @@ public class UserController {
 
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable("id") Integer id,
-                             @Valid @ModelAttribute("user") UserDto userDto,
+                             @Validated(UserDto.Update.class) @ModelAttribute("user") UserDto userDto,
                              BindingResult result) {
 
         if (result.hasErrors()) {

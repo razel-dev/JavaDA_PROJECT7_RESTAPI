@@ -3,37 +3,37 @@
 	  xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8"/>
-<title>Home</title>
+<title>Accueil</title>
 <link rel="stylesheet" href="../../css/bootstrap.min.css" >
 </head>
 <body>
 <div class="container">
 	<div class="row">
 		<div class="col-6">
-			<a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
-			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
-			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
-			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
-			<a href="/trade/list">Rule</a>
+			<a href="/bidList/list">Liste des offres</a>&nbsp;|&nbsp;
+			<a href="/curvePoint/list">Points de courbe</a>&nbsp;|&nbsp;
+			<a href="/rating/list">Notations</a>&nbsp;|&nbsp;
+			<a href="/trade/list">Trades</a>&nbsp;|&nbsp;
+			<a href="/trade/list">Règles</a>
 		</div>
 		<div class="col-6 text-right">
-			Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
+			Utilisateur connecté : <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
 			<form th:action="@{/app-logout}" method="POST">
-				<input type="submit" value="Logout"/>
+				<input type="submit" value="Déconnexion"/>
 			</form>
 		</div>
 	</div>
-	<div class="row"><h2>Trade List</h2></div>
+	<div class="row"><h2>Liste des trades</h2></div>
 	<div class="row">
-		<a href="/trade/add" class="btn btn-primary btn-sm">Add New</a>
+		<a href="/trade/add" class="btn btn-primary btn-sm">Ajouter</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Id</th>
-					<th>Account</th>
+					<th>Compte</th>
 					<th>Type</th>
-					<th>Buy Quantity</th>
-					<th>Action</th>
+					<th>Quantité d'achat</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -43,8 +43,11 @@
 					<td th:text="${trade.type}"></td>
 					<td th:text="${trade.buyQuantity}"></td>
 					<td style="width: 15%" class="text-center">
-						<a th:href="@{/trade/update/{id}(id=${trade.id})}">Edit</a>&nbsp;|&nbsp;
-						<a th:href="@{/trade/delete/{id}(id=${trade.id})}">Delete</a>
+						<a th:href="@{/trade/update/{id}(id=${trade.id})}">Modifier</a>&nbsp;|&nbsp;
+						<form th:action="@{/trade/delete/{id}(id=${trade.id})}" method="post" style="display:inline">
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+							<button type="submit" class="btn btn-link p-0 m-0 align-baseline">Supprimer</button>
+						</form>
 					</td>
 				</tr>
 			</tbody>

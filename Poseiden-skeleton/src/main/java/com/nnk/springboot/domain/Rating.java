@@ -1,12 +1,40 @@
 package com.nnk.springboot.domain;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "rating")
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Rating {
-    // TODO: Map columns in data table RATING with corresponding java fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
+    private Integer id;
+
+    @Column(name = "moodys_rating", length = 125)
+    private String moodysRating;
+
+    @Column(name = "sandp_rating", length = 125)
+    private String sandpRating;
+
+    @Column(name = "fitch_rating", length = 125)
+    private String fitchRating;
+
+    @Column(name = "order_number")
+    private Integer orderNumber;
+
+
+    public Rating(String moodysRating, String sandpRating, String fitchRating, Integer orderNumber) {
+        this.moodysRating = moodysRating;
+        this.sandpRating = sandpRating;
+        this.fitchRating = fitchRating;
+        this.orderNumber = orderNumber;
+    }
 }
