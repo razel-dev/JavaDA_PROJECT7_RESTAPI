@@ -23,43 +23,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAll ()
-    {
-        return userRepository.findAll();
+    public List<UserDto> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @Override
-    public User create(UserDto dto) {
+    public UserDto create(UserDto dto) {
         // Unicité du username
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
         }
-        // Utilisation du mapper MapStruct
+        // MapStruct -> entité
         User entity = userMapper.toEntity(dto);
         // Encodage du mot de passe
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        return userRepository.save(entity);
+        User saved = userRepository.save(entity);
+        UserDto out = userMapper.toDto(saved);
+
+        out.setPassword("");
+        return out;
     }
 
     @Override
-    public User update(Integer id, UserDto dto) {
+    public UserDto update(Integer id, UserDto dto) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
 
-        // Unicité username (existe-t-il un utilisateur avec ce username et un id différent ?)
+        // Unicité username
         if (userRepository.existsByUsernameAndIdNot(dto.getUsername(), id)) {
             throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
         }
 
-        // Met à jour l'entité existante via MapStruct
+        // Mise à jour partielle via MapStruct
         userMapper.updateEntity(user, dto);
-        // Ré-encodage du mot de passe uniquement si fourni (non null et non vide)
+        // Ré-encodage si un nouveau mot de passe est fourni
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        UserDto out = userMapper.toDto(saved);
+        out.setPassword("");
+        return out;
     }
 
     @Override
@@ -76,7 +85,6 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
         UserDto dto = userMapper.toDto(user);
 
-        // Optionnel: forcer le mot de passe vide dans le DTO
         dto.setPassword("");
         return dto;
     }

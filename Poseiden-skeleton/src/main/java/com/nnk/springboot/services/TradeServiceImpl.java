@@ -44,11 +44,12 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public Trade update(Integer id, TradeDto dto) {
+    public TradeDto update(Integer id, TradeDto dto) {
         Trade entity = tradeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Trade introuvable avec l'id " + id));
         tradeMapper.updateEntity(entity, dto);
-        return tradeRepository.save(entity);
+        Trade saved = tradeRepository.save(entity);
+        return tradeMapper.toDto(saved);
     }
 
     @Override

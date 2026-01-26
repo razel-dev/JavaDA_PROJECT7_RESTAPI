@@ -10,6 +10,6 @@ public interface TradeService {
     List<TradeDto> findAll();
     TradeDto create(TradeDto dto);
     TradeDto getDto(Integer id);
-    Trade update(Integer id, TradeDto dto);
+    TradeDto update(Integer id, TradeDto dto);
     void delete(Integer id);
 }
