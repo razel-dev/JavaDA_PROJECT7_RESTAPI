@@ -16,7 +16,7 @@ public class CurvePointDto {
     @NotNull(message = "L'identifiant de courbe (curveId) est obligatoire.")
     private Integer curveId;
 
-    // Optionnel dans le formulaire (suivant vos vues)
+
     private LocalDateTime asOfDate;
 
     @NotNull(message = "Le terme (term) est obligatoire.")

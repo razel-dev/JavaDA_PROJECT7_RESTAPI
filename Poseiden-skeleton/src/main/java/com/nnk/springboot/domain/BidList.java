@@ -31,9 +31,4 @@ public class BidList {
     private BigDecimal bidQuantity;
 
 
-    public BidList(String account, String type, BigDecimal bidQuantity) {
-        this.account = account;
-        this.type = type;
-        this.bidQuantity = bidQuantity;
-    }
 }

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class BidListDto {
-    // id utilisé pour l’update (hidden field dans le formulaire)
+
     private Integer id;
 
     @NotBlank(message = "Le compte est obligatoire.")
