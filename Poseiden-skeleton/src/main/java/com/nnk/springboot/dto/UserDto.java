@@ -29,7 +29,7 @@ public class UserDto {
     @Size(max = 125, message = "Le nom complet ne doit pas dépasser 125 caractères.")
     private String fullname;
 
-    @NotBlank(message = "Le rôle est obligatoire.")
+    @NotBlank(groups = Update.class, message = "Le rôle est obligatoire.")
     @Size(max = 125, message = "Le rôle ne doit pas dépasser 125 caractères.")
     private String role;
 }

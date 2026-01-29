@@ -1,10 +1,11 @@
-package com.nnk.springboot.services;
+package com.nnk.springboot.services.impl;
 
 
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.dto.BidListDto;
 import com.nnk.springboot.mapper.BidListMapper;
 import com.nnk.springboot.repositories.BidListRepository;
+import com.nnk.springboot.services.BidListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class BidListServiceImpl implements BidListService{
+public class BidListServiceImpl implements BidListService {
     private final BidListRepository bidListRepository;
     private final BidListMapper bidListMapper;
 

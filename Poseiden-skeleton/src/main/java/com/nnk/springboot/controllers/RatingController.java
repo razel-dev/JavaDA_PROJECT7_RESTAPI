@@ -3,19 +3,18 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.dto.RatingDto;
 import com.nnk.springboot.services.RatingService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
 public class RatingController {
 
     private final RatingService ratingService;
 
-    public RatingController(RatingService ratingService) {
-        this.ratingService = ratingService;
-    }
 
     @RequestMapping("/rating/list")
     public String home(Model model) {

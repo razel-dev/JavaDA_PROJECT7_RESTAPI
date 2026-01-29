@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-      <title>Spring Boot</title>
+    <meta charset="UTF-8"/>
+    <title>403 - Interdit</title>
 </head>
 <body>
-   <h3>Access Denied Exception</h3>
-   <div>
-	    Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
-	    <form th:action="@{/app-logout}" method="POST">
-	         <input type="submit" value="Logout"/>
-	    </form>
-   </div> 	 
-    <p class="error" th:text="${errorMsg}">Error</p>
+<h1>403 - Interdit</h1>
+<p th:text="${errorMsg}">Vous n'êtes pas autorisé à accéder à cette ressource.</p>
+<a th:href="@{/}">Retour à l'accueil</a>
 </body>
-</html>   
+</html>

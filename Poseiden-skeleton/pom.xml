@@ -83,10 +83,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
-        <!-- Empêche le filtrage des fichiers de configuration Spring et force l'UTF-8 -->
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

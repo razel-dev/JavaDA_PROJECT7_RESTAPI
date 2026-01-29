@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.dto.BidListDto;
 import com.nnk.springboot.services.BidListService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class BidListController {
     private final BidListService bidListService;
 
-    public BidListController(BidListService bidListService) {
-        this.bidListService = bidListService;
-    }
 
     @RequestMapping("/bidList/list")
     public String home(Model model)

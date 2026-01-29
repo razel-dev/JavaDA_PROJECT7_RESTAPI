@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class CurveController {
     private final CurvePointService curvePointService;
-
-    public CurveController(CurvePointService curvePointService) {
-        this.curvePointService = curvePointService;
-    }
 
     @RequestMapping("/curvePoint/list")
     public String home(Model model)

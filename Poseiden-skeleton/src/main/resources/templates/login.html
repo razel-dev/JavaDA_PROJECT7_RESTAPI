@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Connexion</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<!-- Contenu principal -->
+<div class="card shadow-sm mx-auto mt-4" style="max-width: 420px;">
+    <div class="card-body p-4">
+        <h1 class="h4 text-center mb-4">Espace utilisateur</h1>
+
+        <div th:if="${param.error}" class="alert alert-danger py-2" role="alert">
+            Identifiants invalides. Veuillez réessayer.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-info py-2" role="alert">
+            Vous êtes déconnecté.
+        </div>
+        <div th:if="${param.registered}" class="alert alert-success py-2" role="alert">
+            Compte créé avec succès, vous pouvez vous connecter.
+        </div>
+
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="login-tab" data-bs-toggle="tab" href="#login-pane" role="tab"
+                   aria-controls="login-pane" aria-selected="true">Se connecter</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="register-tab" data-bs-toggle="tab" href="#register-pane" role="tab"
+                   aria-controls="register-pane" aria-selected="false">Créer un compte</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="login-pane" role="tabpanel" aria-labelledby="login-tab">
+                <form th:action="@{/login}" method="post" class="mt-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input id="username" type="text" name="username" class="form-control"
+                               autocomplete="username" required placeholder="Entrez votre nom d'utilisateur"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input id="password" type="password" name="password" class="form-control"
+                               autocomplete="current-password" required placeholder="Entrez votre mot de passe"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="register-pane" role="tabpanel" aria-labelledby="register-tab">
+                <form th:action="@{/app/register}" method="post" class="mt-3" novalidate>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label for="reg-username" class="form-label">Nom d'utilisateur</label>
+                        <input id="reg-username" type="text" name="username" class="form-control" required
+                               placeholder="Choisissez un nom d'utilisateur" autocomplete="username"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-fullname" class="form-label">Nom complet</label>
+                        <input id="reg-fullname" type="text" name="fullName" class="form-control" required
+                               placeholder="Ex. Jean Dupont" autocomplete="name"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-password" class="form-label">Mot de passe</label>
+                        <input id="reg-password" type="password" name="password" class="form-control" required
+                               placeholder="Choisissez un mot de passe" autocomplete="new-password"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-confirm" class="form-label">Confirmer le mot de passe</label>
+                        <input id="reg-confirm" type="password" name="confirmPassword" class="form-control" required
+                               placeholder="Ressaisissez le mot de passe" autocomplete="new-password"/>
+                        </div>
+                        <!-- Champ 'Rôle' supprimé dans l’onglet d’inscription -->
+                        <button type="submit" class="btn btn-success w-100">Créer le compte</button>
+                    </form>
+                    <small class="text-muted d-block mt-2">
+                        Votre mot de passe sera chiffré côté serveur (BCrypt).
+                    </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS (pour activer les onglets) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>

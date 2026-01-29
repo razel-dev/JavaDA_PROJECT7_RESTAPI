@@ -9,4 +9,7 @@ public interface UserService {
     UserDto update(Integer id, UserDto dto);
     void delete(Integer id);
     UserDto getDto(Integer id);
+    UserDto register(String username, String fullName, String rawPassword);
+    UserDto changeUserRole(Integer id, String role);
+
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Créer un compte</title>
+</head>
+<body th:replace="~{layout :: layout(~{::content}, 'Créer un compte')}">
+    <th:block th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h1 class="h4 text-center mb-4">Créer un compte</h1>
+
+
+                        <div th:if="${param.error}" class="alert alert-danger py-2" role="alert">
+                            Une erreur est survenue lors de l'inscription. Veuillez vérifier les informations.
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger py-2" role="alert" th:text="${error}">
+                            Message d'erreur
+                        </div>
+
+                        <form th:action="@{/app/register}" method="post" novalidate>
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <div class="mb-3">
+                                <label for="reg-username" class="form-label">Nom d'utilisateur</label>
+                                <input id="reg-username" type="text" name="username" class="form-control" required
+                                       placeholder="Choisissez un nom d'utilisateur" autocomplete="username"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reg-fullname" class="form-label">Nom complet</label>
+
+                                <input id="reg-fullname" type="text" name="fullName" class="form-control" required
+                                       placeholder="Ex. Jean Dupont" autocomplete="name"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reg-password" class="form-label">Mot de passe</label>
+                                <input id="reg-password" type="password" name="password" class="form-control" required
+                                       placeholder="Choisissez un mot de passe" autocomplete="new-password"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reg-confirm" class="form-label">Confirmer le mot de passe</label>
+                                <input id="reg-confirm" type="password" name="confirmPassword" class="form-control" required
+                                       placeholder="Ressaisissez le mot de passe" autocomplete="new-password"/>
+                            </div>
+                            <!-- Champ 'Rôle' supprimé pour éviter l'escalade de privilèges côté client -->
+                            <button type="submit" class="btn btn-success w-100">Créer le compte</button>
+                            <a class="btn btn-link w-100 mt-2" th:href="@{/app/login}">Déjà un compte ? Se connecter</a>
+
+                            <small class="text-muted d-block mt-2">
+                                Votre mot de passe sera chiffré côté serveur (BCrypt).
+                            </small>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

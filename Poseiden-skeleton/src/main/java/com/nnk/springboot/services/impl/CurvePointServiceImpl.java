@@ -19,7 +19,7 @@ import java.util.List;
 public class CurvePointServiceImpl implements CurvePointService {
     private final CurvePointRepository curvePointRepository;
     private final CurvePointMapper curvePointMapper;
-   ;
+
 
     @Transactional(readOnly = true)
     public List<CurvePointDto> findAll() {

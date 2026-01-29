@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.dto.TradeDto;
 import com.nnk.springboot.services.TradeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,12 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class TradeController {
     private final TradeService tradeService;
 
-    public TradeController(TradeService tradeService) {
-        this.tradeService = tradeService;
-    }
+
 
     @RequestMapping("/trade/list")
     public String home(Model model)

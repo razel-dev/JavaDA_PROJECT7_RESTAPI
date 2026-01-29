@@ -89,4 +89,41 @@ public class UserServiceImpl implements UserService {
         dto.setPassword("");
         return dto;
     }
+
+
+    @Override
+    public UserDto register(String username, String fullName, String rawPassword) {
+        // Unicité du username
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
+        }
+        // Création forcée avec rôle USER
+        User user = new User();
+        user.setUsername(username);
+        user.setFullname(fullName);
+        user.setPassword(passwordEncoder.encode(rawPassword));
+        user.setRole("ROLE_USER"); // imposé côté serveur
+
+        User saved = userRepository.save(user);
+        UserDto dto = userMapper.toDto(saved);
+        dto.setPassword("");
+        return dto;
+    }
+
+    @Override
+    public UserDto changeUserRole(Integer id, String role) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
+
+        String normalized = role == null ? "" : role.trim().toUpperCase();
+        if (!normalized.equals("USER") && !normalized.equals("ADMIN")) {
+            throw new IllegalArgumentException("Rôle invalide (attendu: USER ou ADMIN).");
+        }
+        user.setRole("ROLE_" + normalized);
+
+        User saved = userRepository.save(user);
+        UserDto dto = userMapper.toDto(saved);
+        dto.setPassword("");
+        return dto;
+    }
 }
