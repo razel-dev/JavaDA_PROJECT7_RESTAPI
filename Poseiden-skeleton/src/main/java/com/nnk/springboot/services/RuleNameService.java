@@ -8,5 +8,5 @@ public interface RuleNameService {
     RuleNameDto create(RuleNameDto dto);
     RuleNameDto update(Integer id, RuleNameDto dto);
     void delete(Integer id);
-    RuleNameDto getDto(Integer id);
+    RuleNameDto getRuleName(Integer id);
 }

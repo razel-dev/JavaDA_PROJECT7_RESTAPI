@@ -39,7 +39,7 @@ public class RuleNameServiceImpl implements RuleNameService {
 
     @Override
     @Transactional(readOnly = true)
-    public RuleNameDto getDto(Integer id) {
+    public RuleNameDto getRuleName(Integer id) {
         RuleName entity = ruleNameRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("RuleName introuvable avec l'id " + id));
         return ruleNameMapper.toDto(entity);

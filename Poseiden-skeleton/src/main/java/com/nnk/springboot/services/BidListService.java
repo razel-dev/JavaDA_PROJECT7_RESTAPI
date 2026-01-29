@@ -8,7 +8,7 @@ import java.util.List;
 public interface BidListService {
     List<BidListDto> findAll();
     BidListDto create(BidListDto dto);
-    BidListDto getDto(Integer id);
+    BidListDto getBidList(Integer id);
     BidListDto update(Integer id, BidListDto dto);
     void delete(Integer id);
 }

@@ -9,5 +9,5 @@ public interface RatingService {
     RatingDto create(RatingDto dto);
     RatingDto update(Integer id, RatingDto dto);
     void delete(Integer id);
-    RatingDto getDto(Integer id);
+    RatingDto getRating(Integer id);
 }

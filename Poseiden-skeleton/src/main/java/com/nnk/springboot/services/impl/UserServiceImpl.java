@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getDto(Integer id) {
+    public UserDto getUser(Integer id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
         UserDto dto = userMapper.toDto(user);

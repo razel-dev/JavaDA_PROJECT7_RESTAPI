@@ -38,7 +38,7 @@ public class BidListServiceImpl implements BidListService {
     }
     @Transactional(readOnly = true)
     @Override
-    public BidListDto getDto(Integer id) {
+    public BidListDto getBidList (Integer id) {
         BidList entity = bidListRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("BidList introuvable avec l'id " + id));
 

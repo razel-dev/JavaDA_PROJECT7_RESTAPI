@@ -7,7 +7,6 @@ import com.nnk.springboot.repositories.BidListRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -88,7 +87,7 @@ class BidListServiceImplTest {
         when(bidListRepository.findById(1)).thenReturn(Optional.of(entity1));
         when(bidListMapper.toDto(entity1)).thenReturn(dto1);
 
-        BidListDto result = service.getDto(1);
+        BidListDto result = service.getBidList(1);
 
         assertEquals(1, result.getId());
         assertEquals("acc1", result.getAccount());
@@ -101,7 +100,7 @@ class BidListServiceImplTest {
     void getDto_notFound() {
         when(bidListRepository.findById(999)).thenReturn(Optional.empty());
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.getDto(999));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.getBidList(999));
         assertTrue(ex.getMessage().contains("999"));
         verify(bidListRepository).findById(999);
         verifyNoMoreInteractions(bidListRepository);

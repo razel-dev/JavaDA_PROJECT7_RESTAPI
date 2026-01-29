@@ -37,7 +37,7 @@ public class CurvePointServiceImpl implements CurvePointService {
     }
     @Transactional (readOnly = true)
     @Override
-    public CurvePointDto getDto(Integer id) {
+    public CurvePointDto getCurvePoint(Integer id) {
         CurvePoint entity = curvePointRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("CurvePoint introuvable avec l'id " + id));
 

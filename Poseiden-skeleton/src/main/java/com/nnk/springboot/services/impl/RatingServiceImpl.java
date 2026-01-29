@@ -31,7 +31,7 @@ public class RatingServiceImpl implements RatingService {
 
 @Transactional(readOnly = true)
     @Override
-    public RatingDto getDto(Integer id) {
+    public RatingDto getRating(Integer id) {
         Rating entity = ratingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Rating introuvable pour l'id=" + id));
         return ratingMapper.toDto(entity);

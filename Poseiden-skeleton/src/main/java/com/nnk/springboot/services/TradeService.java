@@ -9,7 +9,7 @@ import java.util.List;
 public interface TradeService {
     List<TradeDto> findAll();
     TradeDto create(TradeDto dto);
-    TradeDto getDto(Integer id);
+    TradeDto getTrade(Integer id);
     TradeDto update(Integer id, TradeDto dto);
     void delete(Integer id);
 }

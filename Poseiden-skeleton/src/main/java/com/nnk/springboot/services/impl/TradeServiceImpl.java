@@ -38,7 +38,7 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     @Transactional(readOnly = true)
-    public TradeDto getDto(Integer id) {
+    public TradeDto getTrade(Integer id) {
         Trade trade = tradeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Trade introuvable avec l'id " + id));
         return tradeMapper.toDto(trade);
