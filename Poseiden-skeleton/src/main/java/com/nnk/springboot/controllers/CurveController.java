@@ -43,7 +43,7 @@ public class CurveController {
 
     @GetMapping("/curvePoint/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("curvePoint", curvePointService.getDto(id));
+        model.addAttribute("curvePoint", curvePointService.getCurvePoint(id));
         return "curvePoint/update";
     }
 

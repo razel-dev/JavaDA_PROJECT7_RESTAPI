@@ -41,7 +41,7 @@ public class RuleNameController {
 
     @GetMapping("/ruleName/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("ruleName", ruleNameService.getDto(id));
+        model.addAttribute("ruleName", ruleNameService.getRuleName(id));
         return "ruleName/update";
     }
 

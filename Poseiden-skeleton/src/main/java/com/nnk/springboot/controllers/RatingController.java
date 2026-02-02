@@ -40,7 +40,7 @@ public class RatingController {
 
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("rating", ratingService.getDto(id));
+        model.addAttribute("rating", ratingService.getRating(id));
         return "rating/update";
     }
 
