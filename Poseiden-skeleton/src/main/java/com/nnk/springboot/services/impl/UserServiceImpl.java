@@ -1,129 +1,123 @@
 package com.nnk.springboot.services.impl;
 
-import com.nnk.springboot.domain.User;
 import com.nnk.springboot.dto.UserDto;
 import com.nnk.springboot.mapper.UserMapper;
 import com.nnk.springboot.repositories.UserRepository;
-
 import com.nnk.springboot.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public List<UserDto> findAll() {
-        return userRepository.findAll()
+        long t0 = System.nanoTime();
+        log.info("Liste des utilisateurs - démarrage");
+        List<UserDto> result = userRepository.findAll()
                 .stream()
                 .map(userMapper::toDto)
                 .toList();
+        log.info("Liste récupérée: {} utilisateur(s) en {} ms", result.size(), (System.nanoTime() - t0) / 1_000_000);
+        return result;
     }
 
     @Override
     public UserDto create(UserDto dto) {
-        // Unicité du username
-        if (userRepository.existsByUsername(dto.getUsername())) {
-            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
+        log.info("Création d'un utilisateur: username='{}' role='{}'", dto.getUsername(), dto.getRole());
+        dto.setId(null);
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        // MapStruct -> entité
-        User entity = userMapper.toEntity(dto);
-        // Encodage du mot de passe
-        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        User saved = userRepository.save(entity);
-        UserDto out = userMapper.toDto(saved);
-
-        out.setPassword("");
-        return out;
+        var entity = userMapper.toEntity(dto);
+        var saved = userRepository.save(entity);
+        log.info("Utilisateur créé avec succès: id={} username='{}'", saved.getId(), saved.getUsername());
+        return userMapper.toDto(saved);
     }
 
     @Override
     public UserDto update(Integer id, UserDto dto) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
+        log.info("Mise à jour de l'utilisateur id={} (username='{}' role='{}')", id, dto.getUsername(), dto.getRole());
+        var entity = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Mise à jour impossible: utilisateur introuvable pour id={}", id);
+                    return new IllegalArgumentException("Utilisateur introuvable avec l'id " + id);
+                });
 
-        // Unicité username
-        if (userRepository.existsByUsernameAndIdNot(dto.getUsername(), id)) {
-            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
-        }
 
-        // Mise à jour partielle via MapStruct
-        userMapper.updateEntity(user, dto);
-        // Ré-encodage si un nouveau mot de passe est fourni
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        User saved = userRepository.save(user);
-        UserDto out = userMapper.toDto(saved);
-        out.setPassword("");
-        return out;
+        userMapper.updateEntity(entity, dto);
+        var saved = userRepository.save(entity);
+        log.info("Utilisateur mis à jour: id={} username='{}'", saved.getId(), saved.getUsername());
+        return userMapper.toDto(saved);
     }
 
     @Override
     public void delete(Integer id) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
-        userRepository.delete(user);
+        log.info("Suppression de l'utilisateur id={}", id);
+        var entity = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Suppression impossible: utilisateur introuvable pour id={}", id);
+                    return new IllegalArgumentException("Utilisateur introuvable avec l'id " + id);
+                });
+        userRepository.delete(entity);
+        log.info("Utilisateur supprimé: id={}", id);
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public UserDto getUser(Integer id) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
-        UserDto dto = userMapper.toDto(user);
-
-        dto.setPassword("");
-        return dto;
+        log.debug("Récupération de l'utilisateur id={}", id);
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Utilisateur introuvable pour id={}", id);
+                    return new IllegalArgumentException("Utilisateur introuvable avec l'id " + id);
+                });
+        return userMapper.toDto(user);
     }
 
-
     @Override
-    public UserDto register(String username, String fullName, String rawPassword) {
-        // Unicité du username
-        if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
-        }
-        // Création forcée avec rôle USER
-        User user = new User();
-        user.setUsername(username);
-        user.setFullname(fullName);
-        user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setRole("ROLE_USER"); // imposé côté serveur
+    public UserDto register(String username, String fullname, String password) {
+        log.info("Enregistrement d'un utilisateur: username='{}' fullname='{}'", username, fullname);
+        var dto = new UserDto();
+        dto.setId(null);
+        dto.setUsername(username);
+        dto.setFullname(fullname);
+        dto.setPassword(passwordEncoder.encode(password));
 
-        User saved = userRepository.save(user);
-        UserDto dto = userMapper.toDto(saved);
-        dto.setPassword("");
-        return dto;
+
+        var saved = userRepository.save(userMapper.toEntity(dto));
+        log.info("Utilisateur enregistré: id={} username='{}'", saved.getId(), saved.getUsername());
+        return userMapper.toDto(saved);
     }
 
     @Override
     public UserDto changeUserRole(Integer id, String role) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id: " + id));
-
-        String normalized = role == null ? "" : role.trim().toUpperCase();
-        if (!normalized.equals("USER") && !normalized.equals("ADMIN")) {
-            throw new IllegalArgumentException("Rôle invalide (attendu: USER ou ADMIN).");
-        }
-        user.setRole("ROLE_" + normalized);
-
-        User saved = userRepository.save(user);
-        UserDto dto = userMapper.toDto(saved);
-        dto.setPassword("");
-        return dto;
+        log.info("Changement de rôle utilisateur id={} -> role='{}'", id, role);
+        var entity = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Changement de rôle impossible: utilisateur introuvable pour id={}", id);
+                    return new IllegalArgumentException("Utilisateur introuvable avec l'id " + id);
+                });
+        entity.setRole(role);
+        var saved = userRepository.save(entity);
+        log.info("Rôle utilisateur mis à jour: id={} role='{}'", saved.getId(), role);
+        return userMapper.toDto(saved);
     }
 }
