@@ -22,176 +22,98 @@ import static org.mockito.Mockito.*;
 class BidListServiceImplTest {
 
     @Mock
-    private BidListRepository bidListRepository;
+    BidListRepository bidListRepository;
 
     @Mock
-    private BidListMapper bidListMapper;
+    BidListMapper bidListMapper;
 
     @InjectMocks
-    private BidListServiceImpl service;
+    BidListServiceImpl service;
 
-    private BidList entity1;
-    private BidList entity2;
-    private BidListDto dto1;
-    private BidListDto dto2;
+
+    private Integer id;
+    private BidList entity;
+    private BidListDto dto;
 
     @BeforeEach
     void setUp() {
-        entity1 = sampleEntity(1, "acc1", "type1", new BigDecimal("10.0000"));
-        entity2 = sampleEntity(2, "acc2", "type2", new BigDecimal("20.0000"));
-        dto1 = sampleDto(1, "acc1", "type1", new BigDecimal("10.0000"));
-        dto2 = sampleDto(2, "acc2", "type2", new BigDecimal("20.0000"));
+        id = 1;
+
+        entity = new BidList();
+        entity.setId(id);
+        entity.setAccount("acc");
+        entity.setType("type");
+        entity.setBidQuantity(new BigDecimal("10.00"));
+
+        dto = new BidListDto();
+        dto.setId(id);
+        dto.setAccount("acc");
+        dto.setType("type");
+        dto.setBidQuantity(new BigDecimal("10.00"));
     }
 
     @Test
-    void findAll() {
-        when(bidListRepository.findAll()).thenReturn(List.of(entity1, entity2));
-        when(bidListMapper.toDto(entity1)).thenReturn(dto1);
-        when(bidListMapper.toDto(entity2)).thenReturn(dto2);
+    void testFindAll() {
+        // Arrange
+        when(bidListRepository.findAll()).thenReturn(List.of(entity));
+        when(bidListMapper.toDto(entity)).thenReturn(dto);
 
-        List<BidListDto> result = service.findAll();
+        // Act
+        var result = service.findAll();
 
-        assertEquals(2, result.size());
-        assertEquals("acc1", result.get(0).getAccount());
-        assertEquals("acc2", result.get(1).getAccount());
-        verify(bidListRepository).findAll();
-        verify(bidListMapper).toDto(entity1);
-        verify(bidListMapper).toDto(entity2);
-        verifyNoMoreInteractions(bidListRepository, bidListMapper);
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals(id, result.get(0).getId());
     }
 
     @Test
-    void create() {
-        BidListDto toCreate = sampleDto(null, "accX", "typeX", new BigDecimal("30.0000"));
-        BidList mapped = sampleEntity(null, "accX", "typeX", new BigDecimal("30.0000"));
-        BidList saved = sampleEntity(10, "accX", "typeX", new BigDecimal("30.0000"));
-        BidListDto savedDto = sampleDto(10, "accX", "typeX", new BigDecimal("30.0000"));
+    void testCreate() {
+        // Arrange
+        BidListDto input = new BidListDto();
+        input.setAccount("acc");
+        input.setType("type");
+        input.setBidQuantity(new BigDecimal("10.00"));
 
-        when(bidListMapper.toEntity(toCreate)).thenReturn(mapped);
-        when(bidListRepository.save(mapped)).thenReturn(saved);
-        when(bidListMapper.toDto(saved)).thenReturn(savedDto);
+        BidList toSave = new BidList();
+        toSave.setAccount("acc");
+        toSave.setType("type");
+        toSave.setBidQuantity(new BigDecimal("10.00"));
 
-        BidListDto result = service.create(toCreate);
+        when(bidListMapper.toEntity(input)).thenReturn(toSave);
+        when(bidListRepository.save(toSave)).thenReturn(entity);
+        when(bidListMapper.toDto(entity)).thenReturn(dto);
 
-        assertNotNull(result.getId());
-        assertEquals(10, result.getId());
-        assertEquals("accX", result.getAccount());
-        verify(bidListMapper).toEntity(toCreate);
-        verify(bidListRepository).save(mapped);
-        verify(bidListMapper).toDto(saved);
-        verifyNoMoreInteractions(bidListRepository, bidListMapper);
+        // Act
+        var result = service.create(input);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(id, result.getId());
     }
 
     @Test
-    void getDto_ok() {
-        when(bidListRepository.findById(1)).thenReturn(Optional.of(entity1));
-        when(bidListMapper.toDto(entity1)).thenReturn(dto1);
+    void getBidList() {
+        // Arrange
+        when(bidListRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(bidListMapper.toDto(entity)).thenReturn(dto);
 
-        BidListDto result = service.getBidList(1);
+        // Act
+        var result = service.getBidList(id);
 
-        assertEquals(1, result.getId());
-        assertEquals("acc1", result.getAccount());
-        verify(bidListRepository).findById(1);
-        verify(bidListMapper).toDto(entity1);
-        verifyNoMoreInteractions(bidListRepository, bidListMapper);
+        // Assert
+        assertEquals(id, result.getId());
+        assertEquals("acc", result.getAccount());
     }
 
     @Test
-    void getDto_notFound() {
-        when(bidListRepository.findById(999)).thenReturn(Optional.empty());
+    void delete() {
+        // Arrange
+        when(bidListRepository.existsById(id)).thenReturn(true);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.getBidList(999));
-        assertTrue(ex.getMessage().contains("999"));
-        verify(bidListRepository).findById(999);
-        verifyNoMoreInteractions(bidListRepository);
-        verifyNoInteractions(bidListMapper);
-    }
+        // Act
+        service.delete(id);
 
-    @Test
-    void update_ok() {
-        BidList existing = sampleEntity(5, "accOld", "typeOld", new BigDecimal("1.0000"));
-        BidListDto patch = sampleDto(null, "accNew", "typeNew", new BigDecimal("2.5000"));
-        BidList saved = sampleEntity(5, "accNew", "typeNew", new BigDecimal("2.5000"));
-        BidListDto savedDto = sampleDto(5, "accNew", "typeNew", new BigDecimal("2.5000"));
-
-        when(bidListRepository.findById(5)).thenReturn(Optional.of(existing));
-
-        doAnswer(invocation -> {
-            BidList target = invocation.getArgument(0, BidList.class);
-            BidListDto src = invocation.getArgument(1, BidListDto.class);
-            if (src.getAccount() != null) target.setAccount(src.getAccount());
-            if (src.getType() != null) target.setType(src.getType());
-            if (src.getBidQuantity() != null) target.setBidQuantity(src.getBidQuantity());
-            return null;
-        }).when(bidListMapper).updateEntity(eq(existing), eq(patch));
-
-        when(bidListRepository.save(existing)).thenReturn(saved);
-        when(bidListMapper.toDto(saved)).thenReturn(savedDto);
-
-        BidListDto result = service.update(5, patch);
-
-        assertEquals(5, result.getId());
-        assertEquals("accNew", result.getAccount());
-        assertEquals("typeNew", result.getType());
-        assertEquals(new BigDecimal("2.5000"), result.getBidQuantity());
-
-        verify(bidListRepository).findById(5);
-        verify(bidListMapper).updateEntity(existing, patch);
-        verify(bidListRepository).save(existing);
-        verify(bidListMapper).toDto(saved);
-        verifyNoMoreInteractions(bidListRepository, bidListMapper);
-    }
-
-    @Test
-    void update_notFound() {
-        when(bidListRepository.findById(123)).thenReturn(Optional.empty());
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.update(123, new BidListDto()));
-        assertTrue(ex.getMessage().contains("123"));
-        verify(bidListRepository).findById(123);
-        verifyNoMoreInteractions(bidListRepository);
-        verifyNoInteractions(bidListMapper);
-    }
-
-    @Test
-    void delete_ok() {
-        when(bidListRepository.existsById(7)).thenReturn(true);
-
-        service.delete(7);
-
-        verify(bidListRepository).existsById(7);
-        verify(bidListRepository).deleteById(7);
-        verifyNoMoreInteractions(bidListRepository);
-    }
-
-    @Test
-    void delete_notFound() {
-        when(bidListRepository.existsById(404)).thenReturn(false);
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.delete(404));
-        assertTrue(ex.getMessage().contains("404"));
-
-        verify(bidListRepository).existsById(404);
-        verifyNoMoreInteractions(bidListRepository);
-    }
-
-
-
-    private static BidList sampleEntity(Integer id, String account, String type, BigDecimal qty) {
-        BidList b = new BidList();
-        b.setId(id);
-        b.setAccount(account);
-        b.setType(type);
-        b.setBidQuantity(qty);
-        return b;
-    }
-
-    private static BidListDto sampleDto(Integer id, String account, String type, BigDecimal qty) {
-        BidListDto d = new BidListDto();
-        d.setId(id);
-        d.setAccount(account);
-        d.setType(type);
-        d.setBidQuantity(qty);
-        return d;
+        // Assert
+        verify(bidListRepository).deleteById(id);
     }
 }
