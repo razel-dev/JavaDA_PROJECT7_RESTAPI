@@ -1,51 +1,76 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="fr">
 <head>
-<meta charset="utf-8"/>
-<title>Utilisateurs</title>
-<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+    <meta charset="utf-8"/>
+    <title>Ajouter un utilisateur</title>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-	<div class="row">
-		<div class="col-6">
+<div class="container" sec:authorize="hasRole('ADMIN')">
 
-		</div>
-		<div class="col-6 text-right">
-			<a href="/">Accueil</a>&nbsp;|&nbsp;<a href="/login">Connexion</a>
-		</div>
-	</div>
-	<div class="row"><h2>Liste des utilisateurs</h2></div>
-	<div class="row">
-		<a href="/user/add" class="btn btn-primary btn-sm">Ajouter</a>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Nom complet</th>
-					<th>Nom d'utilisateur</th>
-					<th>Rôle</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="user : ${users}">
-					<td style="width: 10%" th:text="${user.id}"></td>
-					<td th:text="${user.fullname}"></td>
-					<td th:text="${user.username}"></td>
-					<td style="width: 25%" th:text="${user.role}"></td>
-					<td style="width: 15%" class="text-center">
-						<a th:href="@{/user/update/{id}(id=${user.id})}">Modifier</a>&nbsp;|&nbsp;
-						<form th:action="@{/user/delete/{id}(id=${user.id})}" method="post" style="display:inline">
-							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-							<button type="submit" class="btn btn-link p-0 align-baseline">Supprimer</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+    <div class="row">
+        <div class="col-6"></div>
+        <div class="col-6 text-right">
+            <a href="/">Accueil</a>&nbsp;|&nbsp;<a href="/login">Connexion</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <h2>Ajouter un utilisateur</h2>
+    </div>
+
+    <div class="row">
+        <form th:action="@{/user/validate}" th:object="${user}" method="post" class="form-horizontal" style="width: 100%">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="form-group mb-3">
+                <label for="fullname" class="col-sm-2 control-label">Nom complet</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{fullname}" id="fullname" placeholder="Nom complet" class="col-4">
+                    <p class="text-danger" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></p>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="username" class="col-sm-2 control-label">Nom d'utilisateur</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{username}" id="username" placeholder="Nom d'utilisateur" class="col-4">
+                    <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="password" class="col-sm-2 control-label">Mot de passe</label>
+                <div class="col-sm-10">
+                    <input type="password" th:field="*{password}" id="password" placeholder="Mot de passe" class="col-4" autocomplete="new-password">
+                    <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="col-sm-2 control-label">Rôle</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="roleAdmin" th:field="*{role}" th:value="ADMIN">
+                    <label for="roleAdmin" class="checkbox-inline">Administrateur</label>
+                    <input type="radio" id="roleUser" th:field="*{role}" th:value="USER">
+                    <label for="roleUser" class="checkbox-inline">Utilisateur</label>
+                    <p class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <a class="btn btn-danger btn-sm" href="/user/list">Annuler</a>
+                    <input class="btn btn-primary btn-sm" type="submit" value="Créer l’utilisateur">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
 </div>
 </body>
 </html>

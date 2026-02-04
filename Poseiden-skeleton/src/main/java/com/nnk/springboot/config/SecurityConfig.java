@@ -16,20 +16,25 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf
-                // gardez CSRF actif pour les formulaires; adaptez si vous exposez une API REST pure
+
                 .ignoringRequestMatchers("/api/**")
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/app/login", "/app/register", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+
             .formLogin(form -> form
                 .loginPage("/app/login").permitAll()
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
             )
-            .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/app/login?logout"));
+            .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/app/login?logout"))
+            .exceptionHandling(ex -> ex
+                .accessDeniedPage("/error")
+            );
         return http.build();
     }
 

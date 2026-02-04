@@ -27,7 +27,7 @@
                     <span class="navbar-text me-2" sec:authentication="name"></span>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" href="/user/list">Utilisateurs</a>
                 </li>
 
@@ -55,7 +55,7 @@
        
 
 
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
             <a href="/user/list" class="text-decoration-none">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
