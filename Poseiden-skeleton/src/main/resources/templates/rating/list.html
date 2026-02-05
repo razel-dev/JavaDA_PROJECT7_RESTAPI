@@ -2,58 +2,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
 	  xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-<meta charset="utf-8"/>
-<title>Home</title>
-<link rel="stylesheet" href="../../css/bootstrap.min.css" >
+  <meta charset="utf-8"/>
+  <title>Liste des ratings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<div class="container">
-	<div class="row">
-		<div class="col-6">
-			<a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
-			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
-			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
-			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
-			<a href="/ruleName/list">Rule</a>
-		</div>
-		<div class="col-6 text-right">
-			Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
-			<form th:action="@{/app-logout}" method="POST">
-				<input type="submit" value="Logout"/>
-			</form>
-		</div>
-	</div>
-	<div class="row"><h2>Rating List</h2></div>
-	<div class="row">
-		<a href="/rating/add" class="btn btn-primary btn-sm">Add New</a>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Moody's</th>
-					<th>S&amp;P</th>
-					<th>Fitch</th>
-					<th>Order</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="rating : ${ratings}">
-					<td style="width: 10%" th:text="${rating.id}"></td>
-					<td th:text="${rating.moodysRating}"></td>
-					<td th:text="${rating.sandpRating}"></td>
-					<td th:text="${rating.fitchRating}"></td>
-					<td th:text="${rating.orderNumber}"></td>
-					<td style="width: 20%" class="text-center">
-						<a th:href="@{/rating/update/{id}(id=${rating.id})}">Edit</a>&nbsp;|&nbsp;
-						<form th:action="@{/rating/delete/{id}(id=${rating.id})}" method="post" style="display:inline">
-							<button type="submit" class="btn btn-link p-0 m-0 align-baseline">Delete</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
+<header class="container my-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0">Liste des ratings</h1>
+    <a href="/rating/add" class="btn btn-primary btn-sm">Ajouter</a>
+  </div>
+</header>
+
+<main class="container">
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 10%">Id</th>
+          <th>Moody's</th>
+          <th>S&amp;P</th>
+          <th>Fitch</th>
+          <th>Order</th>
+          <th style="width: 20%" class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:if="${#lists.isEmpty(ratings)}">
+          <td colspan="6" class="text-center text-muted py-4">
+            Aucun rating pour le moment.
+          </td>
+        </tr>
+        <tr th:each="rating : ${ratings}">
+          <td th:text="${rating.id}"></td>
+          <td th:text="${rating.moodysRating}"></td>
+          <td th:text="${rating.sandpRating}"></td>
+          <td th:text="${rating.fitchRating}"></td>
+          <td th:text="${rating.orderNumber}"></td>
+          <td class="text-center">
+            <a class="btn btn-outline-secondary btn-sm me-2"
+               th:href="@{/rating/update/{id}(id=${rating.id})}">Modifier</a>
+            <form th:action="@{/rating/delete/{id}(id=${rating.id})}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
 </body>
 </html>
