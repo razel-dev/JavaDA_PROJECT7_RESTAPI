@@ -4,14 +4,13 @@ API REST Spring Boot (Java 17) avec Jakarta (jakarta.*), Spring MVC, Spring Data
 - Spring Boot Web, Data JPA, Validation, Security, Thymeleaf
 - Flyway (migrations)
 - MapStruct (mappers), Lombok
-- DB:  MySQL 
+- DB:  MySQL
 - Build: Maven
 
- ## Variables d’environnement
+## Variables d’environnement utiles
+- SPRING_PROFILES_ACTIVE
+- DB_USERNAME / DB_PASSWORD
 
-- DB_USERNAME: root
-- DB_PASSWORD: rootroot
-- SPRING_PROFILES_ACTIVE: prod
 
 ## Comptes par défaut
 - Rôle ADMIN
@@ -19,6 +18,3 @@ API REST Spring Boot (Java 17) avec Jakarta (jakarta.*), Spring MVC, Spring Data
     - password: demo1234
 
 Utilisez ces identifiants pour vous connecter avec les privilèges administrateur sur USER.
-
-
-
